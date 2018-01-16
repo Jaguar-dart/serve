@@ -15,7 +15,7 @@ environment:
 dependencies:
   jaguar: ^1.2.6
   args: ^1.2.0
-  path:
+  path: ^1.5.1
 
 dev_dependencies:
   test: ^0.12.0
