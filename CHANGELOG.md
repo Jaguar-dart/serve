@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
++ Respects `index.html`
+
 ## 1.0.2
 
 + HTTPS support

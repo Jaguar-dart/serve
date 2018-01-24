@@ -71,4 +71,6 @@ main(List<String> arguments) async {
       securityContext: secContext);
   server.staticFiles('*', parsed['dir']);
   await server.serve();
+
+  print('Serving files on ${server.resourceName} ...');
 }
