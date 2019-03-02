@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:serve/serve.dart' as serve;
+import 'package:serve/serve.dart';
 import 'package:jaguar/jaguar.dart';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
 
 main(List<String> arguments) async {
-  final args = new ArgParser();
+  final args = ArgParser();
   args.addOption('host',
       abbr: 'h',
       help: 'Host address at which files shall be served.',
@@ -16,16 +16,10 @@ main(List<String> arguments) async {
       help: 'Port at which files shall be served.',
       valueHelp: '-p 80',
       defaultsTo: '8080');
-  args.addOption('base-path',
-      abbr: 'b',
-      help: 'Base path at which files shall be served.',
-      valueHelp: '-b /myblog',
-      defaultsTo: '');
-  args.addOption('dir',
-      abbr: 'd',
-      help: 'Directory from which files shall be served.',
-      valueHelp: '-d /home/myname/mysite',
-      defaultsTo: '.');
+  args.addFlag('log',
+      abbr: 'l',
+      help: 'If set, all requests will be logged to the stdout.',
+      defaultsTo: true);
   args.addOption('https',
       abbr: 's',
       help: 'Directory where certificate.pem and keys.pem are stored.',
@@ -34,7 +28,7 @@ main(List<String> arguments) async {
 
   final ArgResults parsed = args.parse(arguments);
 
-  final int port = int.parse(parsed['port'], onError: (_) => null);
+  final int port = int.tryParse(parsed['port']);
 
   if (port == null) {
     print('Invalid port specified!');
@@ -42,35 +36,52 @@ main(List<String> arguments) async {
     exit(-1);
   }
 
+  String contentDir = './';
+
+  if (parsed.rest.isNotEmpty) {
+    contentDir = parsed.rest.first;
+  }
+
+  {
+    final dir = Directory(contentDir);
+    if (!await dir.exists()) {
+      print('Content directory "$contentDir" does not exist!');
+      print(args.usage);
+      exit(-1);
+    }
+  }
+
   SecurityContext secContext;
 
   if (parsed['https'] != null) {
-    final dir = new Directory(parsed['https']);
+    final dir = Directory(parsed['https']);
     if (!await dir.exists()) {
       print('HTTPS configuration directory does not exist!');
       print(args.usage);
       exit(-1);
     }
 
-    secContext = new SecurityContext()
+    secContext = SecurityContext()
       ..useCertificateChain(p.join(dir.path, 'certificate.pem'))
       ..usePrivateKey(p.join(dir.path, 'keys.pem'));
   }
 
+  /* TODO
   String basePath = (parsed['base-path'] as String)
       .split('/')
       .where((s) => s.isNotEmpty)
       .join('/');
 
   if (basePath.isNotEmpty) basePath = '/$basePath';
+      */
 
-  final server = new Jaguar(
-      address: parsed['host'],
+  final config = Conf(
+      host: parsed['host'],
       port: port,
-      basePath: basePath,
+      dir: contentDir,
       securityContext: secContext);
-  server.staticFiles('*', parsed['dir']);
-  await server.serve();
 
-  print('Serving files on ${server.resourceName} ...');
+  bool log = parsed['log'];
+
+  await serve(config, log: log);
 }
