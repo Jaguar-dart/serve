@@ -26,18 +26,10 @@ serve -h localhost -p 8081
 
 # Serve content of specific directory
 
-Use `--dir` (abbreviated as `-d`) to serve contents of a desired directory.
+Use the last parameter to specify to serve contents of a desired directory.
 
 ```bash
-serve -d /home/myname/mysite
-```
-
-# Serve at a given base path
-
-Use `--base-path` (abbreviated as `-b`) to serve contents with desired base path.
-
-```bash
-serve -b /myblog
+serve  /home/myname/mysite
 ```
 
 # More features to come!
