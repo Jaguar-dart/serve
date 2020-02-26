@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:serve/serve.dart';
-import 'package:jaguar/jaguar.dart';
+
 import 'package:args/args.dart';
+import 'package:jaguar/jaguar.dart';
 import 'package:path/path.dart' as p;
+import 'package:serve/serve.dart';
 
 main(List<String> arguments) async {
   final args = ArgParser();
@@ -25,6 +26,16 @@ main(List<String> arguments) async {
       help: 'Directory where certificate.pem and keys.pem are stored.',
       valueHelp: '-s /home/myname/ssl',
       defaultsTo: null);
+  args.addMultiOption('base',
+      abbr: 'b',
+      help: 'Base path to serve the contents at',
+      valueHelp: '-b /v1/app',
+      defaultsTo: ["/"]);
+  args.addMultiOption('dir',
+      abbr: 'd',
+      help: 'Contents of the directory to serve',
+      valueHelp: '-h /var/local/www/',
+      defaultsTo: ["./"]);
 
   final ArgResults parsed = args.parse(arguments);
 
@@ -36,19 +47,27 @@ main(List<String> arguments) async {
     exit(-1);
   }
 
-  String contentDir = './';
+  List<String> contentDirs = parsed['dir'];
 
-  if (parsed.rest.isNotEmpty) {
-    contentDir = parsed.rest.first;
-  }
-
-  {
+  for (final contentDir in contentDirs) {
     final dir = Directory(contentDir);
     if (!await dir.exists()) {
       print('Content directory "$contentDir" does not exist!');
       print(args.usage);
       exit(-1);
     }
+  }
+
+  List<String> basePaths = parsed['base'];
+  if (basePaths.length != contentDirs.length) {
+    if (basePaths.length > contentDirs.length) {
+      print('Number of base paths must not be greater than number of dirs!');
+      print(args.usage);
+      exit(-1);
+    }
+
+    basePaths.addAll(
+        List<String>.filled(contentDirs.length - basePaths.length, "/"));
   }
 
   SecurityContext secContext;
@@ -66,20 +85,8 @@ main(List<String> arguments) async {
       ..usePrivateKey(p.join(dir.path, 'keys.pem'));
   }
 
-  /* TODO
-  String basePath = (parsed['base-path'] as String)
-      .split('/')
-      .where((s) => s.isNotEmpty)
-      .join('/');
-
-  if (basePath.isNotEmpty) basePath = '/$basePath';
-      */
-
-  final config = Conf(
-      host: parsed['host'],
-      port: port,
-      dir: contentDir,
-      securityContext: secContext);
+  final config = Conf(contentDirs, basePaths,
+      host: parsed['host'], port: port, securityContext: secContext);
 
   bool log = parsed['log'];
 
