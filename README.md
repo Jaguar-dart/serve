@@ -42,7 +42,5 @@ serve -b /myblog
 
 # More features to come!
 
-+ [ ] Setting Base path
-+ [ ] Serve from multiple directories (with different base paths)
 + [ ] Support CORS
 + [ ] Support reverse proxy
