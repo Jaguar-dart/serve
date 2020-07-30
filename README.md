@@ -40,6 +40,14 @@ Use `--base-path` (abbreviated as `-b`) to serve contents with desired base path
 serve -b /myblog
 ```
 
+# Automatically open browser when served
+
+Use `--open` (abbreviated as `-o`) to automatically open your default browser at the location being served.
+
+```bash
+serve -o
+```
+
 # More features to come!
 
 + [ ] Support CORS
