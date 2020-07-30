@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:jaguar/jaguar.dart';
 import 'package:path/path.dart' as p;
+import 'package:serve/open_in_browser.dart';
 import 'package:serve/serve.dart';
 
 main(List<String> arguments) async {
@@ -21,6 +22,10 @@ main(List<String> arguments) async {
       abbr: 'l',
       help: 'If set, all requests will be logged to the stdout.',
       defaultsTo: true);
+  args.addFlag('open',
+      abbr: 'o',
+      help: 'If set, opens default browser to the location being served.',
+      defaultsTo: false);
   args.addOption('https',
       abbr: 's',
       help: 'Directory where certificate.pem and keys.pem are stored.',
@@ -28,12 +33,12 @@ main(List<String> arguments) async {
       defaultsTo: null);
   args.addMultiOption('base',
       abbr: 'b',
-      help: 'Base path to serve the contents at',
+      help: 'Base path to serve the contents at.',
       valueHelp: '-b /v1/app',
       defaultsTo: ["/"]);
   args.addMultiOption('dir',
       abbr: 'd',
-      help: 'Contents of the directory to serve',
+      help: 'Contents of the directory to serve.',
       valueHelp: '-h /var/local/www/',
       defaultsTo: ["./"]);
 
@@ -89,6 +94,13 @@ main(List<String> arguments) async {
       host: parsed['host'], port: port, securityContext: secContext);
 
   bool log = parsed['log'];
+
+  if (parsed['open']) {
+    openInBrowser((parsed['https'] != null ? 'https://' : 'http://') +
+        parsed['host'] +
+        ":" +
+        port.toString());
+  }
 
   await serve(config, log: log);
 }
