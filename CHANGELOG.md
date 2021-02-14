@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+
++ Print usage string if '--help' or '-h' command line flag is passed
++ Renamed '-h' abbreviation for host flag to '-H' 
+
 ## 1.0.3
 
 + Respects `index.html`

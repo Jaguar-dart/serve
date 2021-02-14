@@ -8,7 +8,7 @@ import 'package:serve/serve.dart';
 main(List<String> arguments) async {
   final args = ArgParser();
   args.addOption('host',
-      abbr: 'h',
+      abbr: 'H',
       help: 'Host address at which files shall be served.',
       valueHelp: '-h 0.0.0.0',
       defaultsTo: '0.0.0.0');
@@ -34,10 +34,20 @@ main(List<String> arguments) async {
   args.addMultiOption('dir',
       abbr: 'd',
       help: 'Contents of the directory to serve',
-      valueHelp: '-h /var/local/www/',
+      valueHelp: '-d /var/local/www/',
       defaultsTo: ["./"]);
+  args.addFlag('help', abbr: 'h', help: 'Display help', defaultsTo: false);
 
   final ArgResults parsed = args.parse(arguments);
+
+  if (parsed['help']) {
+    print(
+        'Command line tool to serve static files from the specified directory\n');
+    print('Example usage:');
+    print('\tserve -H 192.1.1.10 -p 8080\n');
+    print(args.usage);
+    return;
+  }
 
   final int port = int.tryParse(parsed['port']);
 

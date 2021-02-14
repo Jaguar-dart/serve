@@ -18,7 +18,7 @@ This command by default serves content of current directory on port `8080` and h
 
 # Configure host and port
 
-Use `--host` (abbreviation `-h`) and `--port` (abbreviation `-p`) to serve on desired host and port.
+Use `--host` (abbreviation `-H`) and `--port` (abbreviation `-p`) to serve on a desired host and port.
 
 ```bash
 serve -h localhost -p 8081

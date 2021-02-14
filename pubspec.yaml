@@ -1,21 +1,18 @@
 name: serve
-description: CLI to serves static files in a directory.
-version: 2.0.1
+description: CLI to serve static files in a directory as a HTTP server like Python's SimpleHTTPServer.
+version: 2.0.2
 homepage: https://github.com/Jaguar-dart/serve
-author: Ravi Teja Gudapati <tejainece@gmail.com>
-
-documentation:
 
 executables:
   serve:
 
 environment:
-  sdk: '>2.0.0 <3.0.0'
+  sdk: '>2.8.0 <3.0.0'
 
 dependencies:
-  jaguar: ^2.4.30
-  args: ^1.5.1
-  path: ^1.6.2
+  jaguar: ^2.4.46
+  args: ^1.6.0
+  path: ^1.7.0
 
 dev_dependencies:
   test:
