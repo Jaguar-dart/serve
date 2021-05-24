@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
++ Upgraded to null safety
+
 ## 2.0.2
 
 + Print usage string if '--help' or '-h' command line flag is passed

@@ -9,9 +9,10 @@ class Conf {
 
   final List<String> dirs;
 
-  final SecurityContext securityContext;
+  final SecurityContext? securityContext;
 
-  Conf(this.dirs, this.basePaths, {this.host, this.port, this.securityContext});
+  Conf(this.dirs, this.basePaths,
+      {required this.host, required this.port, this.securityContext});
 }
 
 Future<void> serve(Conf config, {bool log: false}) async {
@@ -24,7 +25,9 @@ Future<void> serve(Conf config, {bool log: false}) async {
     server.staticFiles(config.basePaths[i] + '/*', config.dirs[i]);
   }
 
-  if (log) server.log.onRecord.listen(print);
+  if (log) {
+    server.log.onRecord.listen(print);
+  }
 
   await server.serve(logRequests: log);
 }

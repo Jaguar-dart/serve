@@ -49,7 +49,7 @@ main(List<String> arguments) async {
     return;
   }
 
-  final int port = int.tryParse(parsed['port']);
+  final int? port = int.tryParse(parsed['port']);
 
   if (port == null) {
     print('Invalid port specified!');
@@ -80,7 +80,7 @@ main(List<String> arguments) async {
         List<String>.filled(contentDirs.length - basePaths.length, "/"));
   }
 
-  SecurityContext secContext;
+  SecurityContext? secContext;
 
   if (parsed['https'] != null) {
     final dir = Directory(parsed['https']);
